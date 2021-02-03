@@ -30,7 +30,7 @@ module PEM
           end
         end
 
-        return create_certificate
+        return create_certificate(existing_certificate)
       end
 
       def login
@@ -40,18 +40,30 @@ module PEM
         UI.message("Successfully logged in")
       end
 
-      def create_certificate
+      def create_certificate(existing_certificate)
         UI.important("Creating a new push certificate for app '#{PEM.config[:app_identifier]}'.")
 
         csr, pkey = Spaceship.certificate.create_certificate_signing_request
+        retries = 1
 
         begin
           cert = certificate.create!(csr: csr, bundle_id: PEM.config[:app_identifier])
         rescue => ex
           if ex.to_s.include?("You already have a current")
             # That's the most common failure probably
-            UI.message(ex.to_s)
-            UI.user_error!("You already have 2 active push profiles for this application/environment. You'll need to revoke an old certificate to make room for a new one")
+            if PEM.config[:revoke_existing]
+              if retries > 0
+                # Revoke the cert and retry once
+                retries -= 1
+                existing_certificate.revoke!
+                retry
+              else
+                # Some other error
+                UI.message(ex.to_s)
+                UI.user_error!("Some other error has occured")
+            else
+              UI.message(ex.to_s)
+              UI.user_error!("You already have 2 active push profiles for this application/environment. You'll need to revoke an old certificate to make room for a new one")
           else
             raise ex
           end

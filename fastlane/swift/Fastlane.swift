@@ -2,6 +2,7 @@
 // Copyright (c) 2021 FastlaneTools
 
 import Foundation
+
 /**
  Run ADB Actions
 
@@ -3748,6 +3749,7 @@ public func getProvisioningProfile(adhoc: Bool = false,
    - generateP12: Generate a p12 file additionally to a PEM file
    - activeDaysLimit: If the current certificate is active for less than this number of days, generate a new one
    - force: Create a new push certificate, even if the current one is active for 30 (or PEM_ACTIVE_DAYS_LIMIT) more days
+   - revokeExisting: Will revoke the existing certificate if the 2 push certificate limit applies on creation
    - savePrivateKey: Set to save the private RSA key
    - appIdentifier: The bundle identifier of your app
    - username: Your Apple ID Username
@@ -3775,6 +3777,7 @@ public func getPushCertificate(development: Bool = false,
                                generateP12: Bool = true,
                                activeDaysLimit: Int = 30,
                                force: Bool = false,
+                               revokeExisting: Bool = false,
                                savePrivateKey: Bool = true,
                                appIdentifier: String,
                                username: String,
@@ -3790,6 +3793,7 @@ public func getPushCertificate(development: Bool = false,
                                                                                                         RubyCommand.Argument(name: "generate_p12", value: generateP12),
                                                                                                         RubyCommand.Argument(name: "active_days_limit", value: activeDaysLimit),
                                                                                                         RubyCommand.Argument(name: "force", value: force),
+                                                                                                        RubyCommand.Argument(name: "revoke_existing", value: revokeExisting),
                                                                                                         RubyCommand.Argument(name: "save_private_key", value: savePrivateKey),
                                                                                                         RubyCommand.Argument(name: "app_identifier", value: appIdentifier),
                                                                                                         RubyCommand.Argument(name: "username", value: username),
@@ -5369,6 +5373,7 @@ public func optOutUsage() {
    - generateP12: Generate a p12 file additionally to a PEM file
    - activeDaysLimit: If the current certificate is active for less than this number of days, generate a new one
    - force: Create a new push certificate, even if the current one is active for 30 (or PEM_ACTIVE_DAYS_LIMIT) more days
+   - revokeExisting: Will revoke the existing certificate if the 2 push certificate limit applies on creation
    - savePrivateKey: Set to save the private RSA key
    - appIdentifier: The bundle identifier of your app
    - username: Your Apple ID Username
@@ -5396,6 +5401,7 @@ public func pem(development: Bool = false,
                 generateP12: Bool = true,
                 activeDaysLimit: Int = 30,
                 force: Bool = false,
+                revokeExisting: Bool = false,
                 savePrivateKey: Bool = true,
                 appIdentifier: String,
                 username: String,
@@ -5411,6 +5417,7 @@ public func pem(development: Bool = false,
                                                                                        RubyCommand.Argument(name: "generate_p12", value: generateP12),
                                                                                        RubyCommand.Argument(name: "active_days_limit", value: activeDaysLimit),
                                                                                        RubyCommand.Argument(name: "force", value: force),
+                                                                                       RubyCommand.Argument(name: "revoke_existing", value: force),
                                                                                        RubyCommand.Argument(name: "save_private_key", value: savePrivateKey),
                                                                                        RubyCommand.Argument(name: "app_identifier", value: appIdentifier),
                                                                                        RubyCommand.Argument(name: "username", value: username),
